@@ -43,6 +43,7 @@ longshade accepts multiple input sources from the toolkit ecosystem:
 | conversations/*.jsonl | JSONL | Strongest | ctk |
 | writings/*.md | Markdown | Strong | hugo/blog |
 | emails/*.jsonl | JSONL | Strong | mtk |
+| voice/*.jsonl | JSONL + audio | Strong | recordings |
 | bookmarks/*.jsonl | JSONL | Medium | btk |
 | photos/*.jsonl | JSONL (metadata) | Medium | ptk |
 | reading/*.jsonl | JSONL | Medium | ebk |
@@ -111,6 +112,30 @@ Email correspondence — strong voice signal, personal communication style.
 - `in_reply_to`: Message ID of parent email
 
 **Note:** Only outgoing emails (where `from` matches the persona) contribute to voice. Incoming emails provide context.
+
+### voice/*.jsonl
+
+Audio recordings with transcripts — your actual voice captured in speech.
+
+```jsonl
+{"path": "clips/podcast-2024-01.wav", "transcript": "I think the key insight is...", "duration": 45.2, "timestamp": "2024-01-15T10:00:00Z", "context": "podcast interview", "language": "en"}
+{"path": "clips/lecture-intro.wav", "transcript": "Welcome to today's lecture on category theory...", "duration": 120.5, "timestamp": "2023-06-10", "context": "university lecture"}
+{"path": "clips/voice-memo-042.wav", "caption": "Note to self about the project", "duration": 30.0}
+```
+
+**Required fields:**
+- `path`: Audio file path (relative to voice/ directory)
+
+**Optional fields:**
+- `transcript`: Full transcription (voice signal - strongest)
+- `caption`: Brief description (voice signal - medium)
+- `duration`: Length in seconds
+- `timestamp`: When recorded
+- `context`: Recording context (e.g., "podcast interview", "lecture")
+- `language`: Language code (e.g., "en")
+- `speaker`: Speaker identification (for multi-speaker audio)
+
+**Note:** Transcripts are the primary voice signal for text-based RAG. Raw audio files are used for voice cloning. The audio files should be stored in `voice/clips/` or similar subdirectories.
 
 ### bookmarks/*.jsonl
 
@@ -198,8 +223,18 @@ persona/
 │   │   ├── README.md
 │   │   ├── openai-format.jsonl
 │   │   └── alpaca-format.json
-│   └── tools/              # Dynamic context via MCP/functions
-│       └── mcp-server/
+│   ├── tools/              # Dynamic context via MCP/functions
+│   │   └── mcp-server/
+│   └── voice/              # Voice cloning and speech synthesis
+│       ├── README.md
+│       ├── reference-clips/
+│       │   ├── sample-001.wav
+│       │   └── manifest.json
+│       ├── transcripts.jsonl
+│       ├── chroma/
+│       ├── rvc/
+│       ├── xtts/
+│       └── fine-tune/
 ├── analysis/               # Voice analysis results
 │   ├── vocabulary.json
 │   ├── topics.json
@@ -336,7 +371,8 @@ ECHO metadata and persona capabilities.
     "rag": true,
     "infinigram": true,
     "fine_tune": false,
-    "tools": true
+    "tools": true,
+    "voice": true
   },
   "echo_compliant": true
 }
@@ -357,7 +393,8 @@ PORTABLE BASELINE (always generated)
 ENHANCEMENTS (optional)
 ├── approaches/infinigram/  — Probability mixing (RECOMMENDED)
 ├── approaches/fine-tune/   — Model-specific training data
-└── approaches/tools/       — MCP/function-calling for dynamic context
+├── approaches/tools/       — MCP/function-calling for dynamic context
+└── approaches/voice/       — Voice cloning and speech synthesis
 ```
 
 ### Approach 1: RAG (Retrieval-Augmented Generation)
@@ -445,6 +482,7 @@ Expand:  [turn 1] [turn 2] [TURN 3] [turn 4] [turn 5]
 | bookmarks | Annotation | N/A (atomic) |
 | photos | Caption | N/A (atomic) |
 | reading | Highlight note or review | Full book metadata available |
+| voice | Transcript or caption | Audio file available |
 
 ### Approach 2: Infinigram Probability Mixing (RECOMMENDED)
 
@@ -532,6 +570,65 @@ tools/
 - `search_memories(query)` — Semantic search over all content
 - `get_writing(topic)` — Retrieve essays on a topic
 - `recall_conversation(topic)` — Find related past conversations
+
+### Approach 5: Voice Cloning and Speech Synthesis
+
+Generate audio that sounds like the persona using voice cloning.
+
+**Location:** `approaches/voice/`
+
+```
+voice/
+├── README.md                    # Usage instructions for all methods
+├── reference-clips/             # Best clips for voice cloning
+│   ├── sample-001.wav
+│   ├── sample-002.wav
+│   └── manifest.json            # Clip metadata
+├── transcripts.jsonl            # All transcripts for text RAG
+├── chroma/                      # Chroma-specific format
+│   ├── README.md
+│   └── config.yaml
+├── rvc/                         # RVC-specific format
+│   ├── README.md
+│   └── training-samples/
+├── xtts/                        # XTTS-specific format
+│   ├── README.md
+│   └── speaker-embedding.json
+└── fine-tune/                   # Audio model fine-tuning data
+    ├── README.md
+    ├── chroma-format.jsonl
+    └── whisper-format.jsonl
+```
+
+**Three Voice Approaches:**
+
+1. **Voice Cloning (Reference Audio)**
+   - Select best reference clips (clear audio, representative voice)
+   - Provide clips in format for Chroma, RVC, XTTS, F5-TTS, etc.
+   - No model training required — just inference-time cloning
+
+2. **Audio Model Fine-Tuning**
+   - Generate training data for fine-tuning speech models
+   - Formats: Chroma (text+audio pairs), Whisper (transcription), custom
+   - Similar to text fine-tune approach but for audio
+
+3. **Speech RAG / Context Injection**
+   - Store transcripts in text RAG index
+   - MCP tools that retrieve relevant transcripts during speech generation
+   - Context: "When asked about X, the persona said: [transcript]"
+
+**Supported Systems:**
+
+| System | Type | Quality | Data Needed |
+|--------|------|---------|-------------|
+| Chroma TTS | Zero-shot | Great | 6-30 sec reference |
+| Coqui XTTS v2 | Zero-shot | Great | 6-30 sec reference |
+| F5-TTS | Zero-shot | Great | 15 sec reference |
+| RVC | Fine-tuned | Excellent | 10-30 min training |
+| OpenVoice | Zero-shot | Good | 30 sec reference |
+| ElevenLabs | Cloud | Excellent | 1 min reference |
+
+**Philosophy:** This approach stores **data** (reference audio, transcripts, training samples), not trained models. The same reference clips can be used with any voice cloning system, current or future.
 
 ---
 
@@ -904,6 +1001,106 @@ MCP servers work with MCP-compatible clients. For non-MCP systems, the same retr
 ### Compliance and Validation
 
 - [longecho](https://github.com/aarontowell/longecho) — ECHO compliance validator
+
+---
+
+## Voice Synthesis (Audio Persona)
+
+Beyond text generation, longshade can integrate with voice cloning to produce audio that sounds like the persona. This creates a full digital twin: thinks like you AND sounds like you.
+
+### Pipeline
+
+```
+Prompt → Fine-tuned LLM (writes like you) → Voice Clone (sounds like you) → Audio
+```
+
+### Voice Cloning Approaches
+
+| Tool | Quality | Data Needed | Type | Notes |
+|------|---------|-------------|------|-------|
+| **RVC** | Excellent | 10-30 min | Fine-tuned | Best for nuance, singing |
+| **Coqui XTTS v2** | Great | 6-30 sec | Zero-shot | Quick setup |
+| **F5-TTS** | Great | 15 sec | Zero-shot | Very natural |
+| **OpenVoice** | Good | 30 sec | Zero-shot | Style control |
+| **ElevenLabs** | Excellent | 1 min | Cloud | Paid service |
+
+### Zero-shot vs Fine-tuned
+
+**Zero-shot (XTTS, F5-TTS, OpenVoice):**
+- Extracts "voice embedding" from short reference clip
+- Like a fingerprint — captures pitch, tone, timbre
+- Quick to set up, good for most uses
+- Analogous to few-shot prompting in LLMs
+
+**Fine-tuned (RVC):**
+- Actually trains a model on your voice
+- Learns vocal patterns, transitions, micro-pauses, breath patterns
+- Needs variety: different words, emotions, energy levels
+- Analogous to LoRA fine-tuning in LLMs
+- Best for highest fidelity or singing
+
+### RVC Setup (Recommended for Quality)
+
+**Requirements:**
+- 10-30 minutes of clean audio (no background noise/music)
+- Split into clips (10-15 sec each works well)
+- Variety: different sentences, emotions, energy levels
+- 48kHz WAV preferred, 16-bit
+
+**Good sources for voice data:**
+- Voice memos
+- Podcast/video recordings of yourself
+- Screen recordings where you're talking
+- Read a passage specifically for this purpose
+
+**Training pipeline:**
+1. Preprocess audio → extracts pitch (f0) and features
+2. Train model (30-60 min on GPU)
+3. Index creation (for retrieval)
+4. Inference — convert any voice to yours
+
+**Installation:**
+```bash
+git clone https://github.com/RVC-Project/Retrieval-based-Voice-Conversion-WebUI
+cd Retrieval-based-Voice-Conversion-WebUI
+pip install -r requirements.txt
+python infer-web.py
+```
+
+### Output Structure (Planned)
+
+```
+persona/
+├── ...existing files...
+└── voice/
+    ├── README.md           # How to use voice synthesis
+    ├── samples/            # Reference audio clips
+    │   └── reference.wav
+    ├── rvc/                # RVC model (if trained)
+    │   ├── model.pth
+    │   └── index.index
+    └── config.yaml         # Voice synthesis settings
+```
+
+### Integration with Text Persona
+
+The full pipeline combines:
+1. **System prompt + RAG/infinigram** → generates text in your voice
+2. **Voice clone** → converts text to speech in your voice
+
+```bash
+# Generate response
+longshade chat ./persona/ --query "What do you think about X?"
+# Output: "I think the interesting thing about X is..."
+
+# Convert to audio
+longshade speak ./persona/ --text "I think the interesting thing about X is..."
+# Output: response.wav (in your voice)
+
+# Or combined
+longshade chat ./persona/ --query "What do you think about X?" --speak
+# Output: text response + audio file
+```
 
 ---
 
