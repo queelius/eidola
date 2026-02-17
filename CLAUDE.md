@@ -21,11 +21,15 @@ A persona directory contains a CLAUDE.md (system prompt), arkiv data (SQLite + J
 
 ```
 eidola/
-├── plugin.json            # Claude Code plugin definition
+├── .claude-plugin/
+│   └── plugin.json        # Claude Code plugin definition
 ├── skills/                # Plugin skills
-│   ├── generate.md        # /eidola-generate
-│   ├── validate.md        # /eidola-validate
-│   └── info.md            # /eidola-info
+│   ├── evaluate/SKILL.md  # /eidola-evaluate
+│   ├── generate/SKILL.md  # /eidola-generate
+│   ├── info/SKILL.md      # /eidola-info
+│   ├── interview/SKILL.md # /eidola-interview
+│   ├── refresh/SKILL.md   # /eidola-refresh
+│   └── validate/SKILL.md  # /eidola-validate
 ├── SPEC.md                # Persona directory convention
 ├── README.md              # What eidola is
 ├── CLAUDE.md              # This file

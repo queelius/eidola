@@ -60,5 +60,3 @@ Files:
   ✓ media/
   ✓ corpus/
 ```
-
-After writing the file, do NOT commit (another agent will handle commits).
