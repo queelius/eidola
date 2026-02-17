@@ -52,9 +52,11 @@ persona/
 ├── README.md              # Self-describing (ECHO). What this is, how to use it.
 ├── CLAUDE.md              # System prompt. Personality, voice, values, boundaries.
 ├── .mcp.json              # Connects arkiv MCP server to data.db
+├── provenance.json        # Consent and authorization record
 ├── manifest.json          # arkiv manifest (collection schemas)
 ├── data.db                # arkiv SQLite (queryable via MCP)
 ├── voice-samples.jsonl    # Few-shot Q&A pairs demonstrating voice
+├── evaluation.md          # Fidelity assessment and calibration notes
 ├── memory/                # Online memory (conversations with the simulacrum)
 │   └── conversations.jsonl
 ├── media/                 # Audio clips, images, referenced by records
@@ -156,7 +158,19 @@ arkiv provides the data. The TTS integration is left to the user and future tool
 
 ## Claude Code Plugin
 
-The longshade repo is a Claude Code plugin with three skills:
+The longshade repo is a Claude Code plugin with six skills:
+
+### /longshade-interview
+
+Interview the person whose simulacrum is being built. Claude asks questions to elicit:
+
+- Values and beliefs
+- Communication style and characteristic phrases
+- Biographical anchors and formative experiences
+- Intellectual interests and contrarian takes
+- Boundaries and off-limits topics
+
+Output is arkiv-format JSONL — becomes new data in the corpus. Fills gaps that existing data might miss.
 
 ### /longshade-generate
 
@@ -166,11 +180,29 @@ Create a persona from arkiv data. Interactive, conversational process:
 2. Claude analyzes the data — reads samples, identifies patterns, distills personality
 3. Claude writes CLAUDE.md (system prompt) with user review and refinement
 4. Claude curates voice-samples.jsonl from representative Q&A pairs
-5. Copies/links media files
-6. Writes manifest.json, .mcp.json, README.md
-7. Output: a complete persona directory
+5. Claude writes provenance.json with consent record
+6. Copies/links media files
+7. Writes manifest.json, .mcp.json, README.md
+8. Output: a complete persona directory
 
 The user stays in control throughout. This is a conversation, not a pipeline.
+
+### /longshade-evaluate
+
+Test the simulacrum's fidelity:
+
+- Held-out test against reserved data
+- Calibration interview with the person
+- Hallucination check on undiscussed topics
+- Output: evaluation.md in the persona directory
+
+### /longshade-refresh
+
+Lighter-weight update when new data arrives:
+
+- Claude reads new data, suggests updates to CLAUDE.md
+- Preserves manual edits
+- Person reviews and approves changes
 
 ### /longshade-validate
 
@@ -178,6 +210,7 @@ Check a persona directory against the spec:
 
 - Required files present (README.md, CLAUDE.md, data.db, manifest.json)
 - CLAUDE.md is well-formed (has identity, voice, values, boundaries sections)
+- provenance.json has consent record
 - data.db is a valid arkiv SQLite database
 - manifest.json matches the data
 - .mcp.json points to valid paths
@@ -190,6 +223,7 @@ Inspect a persona directory:
 - Voice sample count
 - Media inventory (audio clips, images)
 - Collection summaries from manifest
+- Provenance summary
 
 ---
 
@@ -199,7 +233,10 @@ Inspect a persona directory:
 longshade/
 ├── plugin.json            # Claude Code plugin definition
 ├── skills/
+│   ├── interview.md       # /longshade-interview skill
 │   ├── generate.md        # /longshade-generate skill
+│   ├── evaluate.md        # /longshade-evaluate skill
+│   ├── refresh.md         # /longshade-refresh skill
 │   ├── validate.md        # /longshade-validate skill
 │   └── info.md            # /longshade-info skill
 ├── SPEC.md                # Persona directory convention (the spec)

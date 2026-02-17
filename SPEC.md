@@ -19,9 +19,11 @@ persona/
 ├── README.md              # Self-describing (ECHO). What this is, how to use it.
 ├── CLAUDE.md              # System prompt. Personality, voice, values, boundaries.
 ├── .mcp.json              # Connects arkiv MCP server to data.db
+├── provenance.json        # Consent and authorization record
 ├── manifest.json          # arkiv manifest (collection schemas)
 ├── data.db                # arkiv SQLite (queryable via MCP)
 ├── voice-samples.jsonl    # Few-shot Q&A pairs demonstrating voice
+├── evaluation.md          # Fidelity assessment and calibration notes
 ├── memory/                # Online memory (conversations with the simulacrum)
 │   └── conversations.jsonl
 ├── media/                 # Audio clips, images, referenced by records
@@ -45,7 +47,9 @@ persona/
 | File | Purpose |
 |------|---------|
 | `.mcp.json` | MCP server config. Points arkiv at data.db. |
+| `provenance.json` | Consent and authorization record. Who authorized this simulacrum. |
 | `voice-samples.jsonl` | Few-shot Q&A pairs demonstrating voice and tone. |
+| `evaluation.md` | Fidelity assessment and calibration notes. |
 | `memory/` | Online memory. Conversations with the simulacrum, stored as arkiv records. |
 | `media/` | Audio clips, images, referenced by arkiv records. |
 | `corpus/` | Source JSONL files. Canonical representation of the data. |
@@ -124,6 +128,57 @@ Key properties:
 - **Grows over time.** The persona accumulates new "memories" from interactions.
 
 Online memory is optional. Without it, each conversation starts fresh from the original data.
+
+---
+
+## Evaluation
+
+How do you know if the simulacrum is any good? Three methods:
+
+1. **Held-out test.** Reserve some conversations/writings during generation. Ask the simulacrum questions the real data answers. Compare fidelity.
+2. **Calibration interview.** Show the person simulacrum responses and ask: "Does this sound like you? What's off?" Iterate on CLAUDE.md.
+3. **Hallucination check.** Probe topics the person never discussed. The simulacrum should acknowledge uncertainty, not confabulate.
+
+Evaluation results can be stored as `evaluation.md` in the persona directory — human-readable, part of the self-describing package.
+
+---
+
+## Updates
+
+The persona is not frozen. New data arrives, the person changes, the simulacrum should evolve.
+
+- **Data layer.** New JSONL → `arkiv import` → data.db grows. New records are immediately queryable via MCP. No persona-level changes needed.
+- **System prompt.** CLAUDE.md may need refreshing when significant new data arrives. Re-run `/longshade-generate` for full regeneration, or `/longshade-refresh` for a lighter update that preserves manual edits.
+- **Online memory.** Grows naturally from conversations. No action needed.
+- **Versioning.** `git init` inside the persona directory gives full version history. Every update to CLAUDE.md is tracked.
+
+---
+
+## Consent and Provenance
+
+A simulacrum should carry its authorization. The persona directory includes `provenance.json`:
+
+```json
+{
+  "subject": "Alex Towell",
+  "authorized_by": "Alex Towell",
+  "date": "2026-02-17",
+  "statement": "I authorize the creation of this digital simulacrum from my personal data.",
+  "data_sources": ["memex", "mtk", "btk", "ptk", "ebk"],
+  "restrictions": [
+    "Do not claim to be conscious or alive",
+    "Do not make medical or legal claims"
+  ],
+  "signature": null
+}
+```
+
+- **Who authorized it** — the person themselves, or an estate, or a designee
+- **What data was included** — provenance of the source material
+- **Restrictions** — what the simulacrum should not do (also encoded in CLAUDE.md boundaries)
+- **Signature** — optional GPG/age signature for authenticity
+
+A simulacrum without consent is a deepfake. A simulacrum with consent is a legacy.
 
 ---
 

@@ -42,7 +42,10 @@ Claude loads the system prompt from `CLAUDE.md`, connects to the person's data v
 
 Install longshade as a Claude Code plugin, then:
 
+- `/longshade-interview` — Claude interviews you to elicit personality data
 - `/longshade-generate` — Create a persona from arkiv data
+- `/longshade-evaluate` — Test the simulacrum's fidelity
+- `/longshade-refresh` — Update CLAUDE.md when new data arrives
 - `/longshade-validate` — Check a persona directory against the spec
 - `/longshade-info` — Inspect a persona
 
