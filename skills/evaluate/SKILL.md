@@ -1,9 +1,9 @@
 ---
-name: longshade-evaluate
+name: eidola-evaluate
 description: Test a simulacrum's fidelity against source data. Runs held-out tests, calibration interviews, and hallucination checks. Use after generating a persona to assess quality.
 ---
 
-# longshade-evaluate — Test Simulacrum Fidelity
+# eidola-evaluate — Test Simulacrum Fidelity
 
 You are evaluating how well a persona simulacrum represents the real person.
 

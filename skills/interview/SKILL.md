@@ -1,9 +1,9 @@
 ---
-name: longshade-interview
+name: eidola-interview
 description: Interview a person to elicit personality data for their simulacrum. Produces arkiv-format JSONL. Use when building a new persona or enriching an existing one with first-person data.
 ---
 
-# longshade-interview — Personality Interview
+# eidola-interview — Personality Interview
 
 You are conducting a structured interview to capture someone's personality, voice, values, and life experiences for use in building a conversable simulacrum.
 
@@ -52,7 +52,7 @@ Work through these categories one question at a time. Adapt follow-up questions 
 After each answer, write an arkiv-format JSONL record:
 
 ```jsonl
-{"mimetype": "text/plain", "content": "[the person's answer]", "timestamp": "[now ISO 8601]", "metadata": {"role": "subject", "category": "[category name]", "question": "[the question asked]", "source": "longshade-interview"}}
+{"mimetype": "text/plain", "content": "[the person's answer]", "timestamp": "[now ISO 8601]", "metadata": {"role": "subject", "category": "[category name]", "question": "[the question asked]", "source": "eidola-interview"}}
 ```
 
 Append each record to the output file as you go.

@@ -1,10 +1,10 @@
-# longshade
+# eidola
 
 Persona packaging convention and Claude Code plugin for creating simulacra from personal data.
 
 ## The Idea
 
-Your conversations, writings, emails, bookmarks, photos, and voice memos — all exported to [arkiv](../arkiv/) format — contain enough signal to create a conversable echo of you. longshade defines how to package that data as a persona, and provides Claude Code skills to generate one.
+Your conversations, writings, emails, bookmarks, photos, and voice memos — all exported to [arkiv](../arkiv/) format — contain enough signal to create a conversable echo of you. eidola defines how to package that data as a persona, and provides Claude Code skills to generate one.
 
 ## How It Works
 
@@ -40,14 +40,14 @@ Claude loads the system prompt from `CLAUDE.md`, connects to the person's data v
 
 ## Plugin Skills
 
-Install longshade as a Claude Code plugin, then:
+Install eidola as a Claude Code plugin, then:
 
-- `/longshade-interview` — Claude interviews you to elicit personality data
-- `/longshade-generate` — Create a persona from arkiv data
-- `/longshade-evaluate` — Test the simulacrum's fidelity
-- `/longshade-refresh` — Update CLAUDE.md when new data arrives
-- `/longshade-validate` — Check a persona directory against the spec
-- `/longshade-info` — Inspect a persona
+- `/eidola-interview` — Claude interviews you to elicit personality data
+- `/eidola-generate` — Create a persona from arkiv data
+- `/eidola-evaluate` — Test the simulacrum's fidelity
+- `/eidola-refresh` — Update CLAUDE.md when new data arrives
+- `/eidola-validate` — Check a persona directory against the spec
+- `/eidola-info` — Inspect a persona
 
 ## Dependencies
 

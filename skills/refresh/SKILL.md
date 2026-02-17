@@ -1,9 +1,9 @@
 ---
-name: longshade-refresh
+name: eidola-refresh
 description: Update a persona's CLAUDE.md when new data arrives. Lightweight alternative to full regeneration that preserves manual edits. Use when new arkiv data has been imported.
 ---
 
-# longshade-refresh — Update Persona with New Data
+# eidola-refresh — Update Persona with New Data
 
 You are updating an existing persona to incorporate new data without losing manual edits to CLAUDE.md.
 

@@ -1,12 +1,12 @@
 {
-  "name": "longshade",
+  "name": "eidola",
   "description": "Persona packaging convention — create, evaluate, and manage conversable simulacra from personal data",
   "version": "0.2.0",
   "author": {
     "name": "Alex Towell",
     "email": "lex@metafunctor.com"
   },
-  "repository": "https://github.com/queelius/longshade",
+  "repository": "https://github.com/queelius/eidola",
   "license": "MIT",
   "keywords": ["persona", "simulacra", "echo", "arkiv", "voice"]
 }

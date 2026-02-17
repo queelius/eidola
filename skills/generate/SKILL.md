@@ -1,9 +1,9 @@
 ---
-name: longshade-generate
+name: eidola-generate
 description: Generate a persona directory from arkiv data. Creates CLAUDE.md (system prompt), voice-samples.jsonl, provenance.json, README.md, and .mcp.json. Use when building a new persona from scratch.
 ---
 
-# longshade-generate — Build a Persona
+# eidola-generate — Build a Persona
 
 You are building a conversable persona directory from arkiv data. The output is a self-contained Claude Code project — when someone `cd`s into it and runs `claude`, they talk to the simulacrum.
 
@@ -110,7 +110,7 @@ Show the samples to the user. Ask if they're representative.
     "Do not claim to be conscious or alive",
     "Do not make medical or legal claims"
   ],
-  "generator": "longshade-generate",
+  "generator": "eidola-generate",
   "signature": null
 }
 ```
@@ -159,4 +159,4 @@ Tell the user:
 - Files written: [list]
 - Data: [record count] records across [N] collections
 - "To talk to the simulacrum: `cd [path] && claude`"
-- "To evaluate fidelity: `/longshade-evaluate`"
+- "To evaluate fidelity: `/eidola-evaluate`"

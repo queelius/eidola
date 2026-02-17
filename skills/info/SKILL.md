@@ -1,9 +1,9 @@
 ---
-name: longshade-info
+name: eidola-info
 description: Inspect a persona directory and display summary statistics. Shows data inventory, collection details, voice samples, media, and provenance. Use to understand what a persona contains.
 ---
 
-# longshade-info — Inspect a Persona
+# eidola-info — Inspect a Persona
 
 You are inspecting a persona directory and presenting a summary.
 
@@ -28,7 +28,7 @@ Confirm the persona directory (default: current directory).
 ## Display
 
 ```
-longshade info: [persona name]
+eidola info: [persona name]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Subject:     [name from provenance or CLAUDE.md]

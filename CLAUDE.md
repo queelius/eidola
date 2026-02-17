@@ -1,6 +1,6 @@
 # CLAUDE.md
 
-## What longshade Is
+## What eidola Is
 
 A persona packaging convention (SPEC.md) and Claude Code plugin for creating simulacra from personal data.
 
@@ -10,7 +10,7 @@ A persona packaging convention (SPEC.md) and Claude Code plugin for creating sim
 
 A persona directory contains a CLAUDE.md (system prompt), arkiv data (SQLite + JSONL), and an MCP config. To use it: `cd persona/ && claude`.
 
-## What longshade Is NOT
+## What eidola Is NOT
 
 - Not a Python package — no pip install, no code, no dependencies
 - Not a RAG pipeline, embedding system, or retrieval engine
@@ -20,14 +20,14 @@ A persona directory contains a CLAUDE.md (system prompt), arkiv data (SQLite + J
 ## Project Structure
 
 ```
-longshade/
+eidola/
 ├── plugin.json            # Claude Code plugin definition
 ├── skills/                # Plugin skills
-│   ├── generate.md        # /longshade-generate
-│   ├── validate.md        # /longshade-validate
-│   └── info.md            # /longshade-info
+│   ├── generate.md        # /eidola-generate
+│   ├── validate.md        # /eidola-validate
+│   └── info.md            # /eidola-info
 ├── SPEC.md                # Persona directory convention
-├── README.md              # What longshade is
+├── README.md              # What eidola is
 ├── CLAUDE.md              # This file
 └── docs/plans/            # Design history
 ```
@@ -37,7 +37,7 @@ longshade/
 1. **The LLM is the intelligence** — Claude Code does the analysis, not custom code
 2. **The output is durable** — plain text, JSONL, SQLite. ECHO-compliant.
 3. **Light touch** — the spec is minimal, the future will do it better
-4. **arkiv is the data layer** — longshade depends on arkiv for data format and MCP
+4. **arkiv is the data layer** — eidola depends on arkiv for data format and MCP
 
 ## Dependencies
 

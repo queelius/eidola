@@ -1,11 +1,11 @@
 ---
-name: longshade-validate
-description: Validate a persona directory against the longshade spec. Checks required files, CLAUDE.md structure, data integrity, and provenance. Use before sharing or after modifications.
+name: eidola-validate
+description: Validate a persona directory against the eidola spec. Checks required files, CLAUDE.md structure, data integrity, and provenance. Use before sharing or after modifications.
 ---
 
-# longshade-validate — Check Persona Structure
+# eidola-validate — Check Persona Structure
 
-You are validating a persona directory against the longshade specification.
+You are validating a persona directory against the eidola specification.
 
 ## Before Starting
 
@@ -50,7 +50,7 @@ Run all checks and report results:
 ## Report
 
 ```
-longshade validate: [persona name]
+eidola validate: [persona name]
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 Required:  [N/4] passed

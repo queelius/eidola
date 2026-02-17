@@ -1,4 +1,4 @@
-# longshade: Persona Packaging Convention
+# eidola: Persona Packaging Convention
 
 **Version:** 0.2 (Draft)
 
@@ -6,9 +6,9 @@
 
 ## Purpose
 
-longshade defines how to package personal data as a conversable persona. The output is an ECHO-compliant directory that doubles as a Claude Code project — `cd persona/ && claude` starts a conversation with the simulacrum.
+eidola defines how to package personal data as a conversable persona. The output is an ECHO-compliant directory that doubles as a Claude Code project — `cd persona/ && claude` starts a conversation with the simulacrum.
 
-The intelligence is in the LLM, not in code. longshade is a convention, not a pipeline.
+The intelligence is in the LLM, not in code. eidola is a convention, not a pipeline.
 
 ---
 
@@ -148,7 +148,7 @@ Evaluation results can be stored as `evaluation.md` in the persona directory —
 The persona is not frozen. New data arrives, the person changes, the simulacrum should evolve.
 
 - **Data layer.** New JSONL → `arkiv import` → data.db grows. New records are immediately queryable via MCP. No persona-level changes needed.
-- **System prompt.** CLAUDE.md may need refreshing when significant new data arrives. Re-run `/longshade-generate` for full regeneration, or `/longshade-refresh` for a lighter update that preserves manual edits.
+- **System prompt.** CLAUDE.md may need refreshing when significant new data arrives. Re-run `/eidola-generate` for full regeneration, or `/eidola-refresh` for a lighter update that preserves manual edits.
 - **Online memory.** Grows naturally from conversations. No action needed.
 - **Versioning.** `git init` inside the persona directory gives full version history. Every update to CLAUDE.md is tracked.
 
