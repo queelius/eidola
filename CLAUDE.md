@@ -1,101 +1,52 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
-
-## Project Status
-
-**Specification-only.** No implementation exists yet. See SPEC.md for the full technical specification.
-
 ## What longshade Is
 
-Generates a conversable persona from personal data:
-- **Input**: Conversations, writings, emails, bookmarks, photos, reading notes (from toolkit ecosystem)
-- **Output**: System prompt, RAG index, voice samples, infinigram corpus, MCP tools
+A persona packaging convention (SPEC.md) and Claude Code plugin for creating simulacra from personal data.
 
-Multiple approaches for persona instantiation:
-1. **RAG** — Retrieval-augmented generation (portable baseline)
-2. **Infinigram** — Probability mixing for authentic voice (recommended)
-3. **Fine-tuning** — Model-specific training data
-4. **Tool use** — MCP/function-calling for dynamic context
+- **The spec** defines the persona directory convention
+- **The plugin** provides skills to generate, validate, and inspect persona directories
+- **The output** is an ECHO-compliant directory that IS a Claude Code project
 
-The goal: instantiate an LLM that speaks in your voice, with any provider.
+A persona directory contains a CLAUDE.md (system prompt), arkiv data (SQLite + JSONL), and an MCP config. To use it: `cd persona/ && claude`.
 
 ## What longshade Is NOT
 
-- **Not longecho** — longecho validates ECHO compliance; longshade creates personas
-- **Not an LLM** — produces artifacts that work with any LLM
-- **Not a chat interface** — that's planned but not the core purpose
+- Not a Python package — no pip install, no code, no dependencies
+- Not a RAG pipeline, embedding system, or retrieval engine
+- Not a fine-tuned model or training framework
+- Not an application that calls LLM APIs
+
+## Project Structure
+
+```
+longshade/
+├── plugin.json            # Claude Code plugin definition
+├── skills/                # Plugin skills
+│   ├── generate.md        # /longshade-generate
+│   ├── validate.md        # /longshade-validate
+│   └── info.md            # /longshade-info
+├── SPEC.md                # Persona directory convention
+├── README.md              # What longshade is
+├── CLAUDE.md              # This file
+└── docs/plans/            # Design history
+```
 
 ## Key Principles
 
-1. **Standalone toolkit** — Defines its own formats, works independently
-2. **Privacy-conscious** — Personal data requires careful handling
-3. **Portable output** — System prompt + RAG works with any LLM
-4. **Voice fidelity** — Capture authentic voice, not hallucinate it
+1. **The LLM is the intelligence** — Claude Code does the analysis, not custom code
+2. **The output is durable** — plain text, JSONL, SQLite. ECHO-compliant.
+3. **Light touch** — the spec is minimal, the future will do it better
+4. **arkiv is the data layer** — longshade depends on arkiv for data format and MCP
 
-## Development Commands (When Implementation Begins)
+## Dependencies
 
-```bash
-# Install with dev dependencies
-pip install -e ".[dev]"
-
-# Run tests
-pytest
-
-# Run single test
-pytest tests/test_foo.py::test_bar -v
-
-# Test coverage
-pytest --cov=src/longshade --cov-report=term-missing
-
-# Formatting
-black src/ tests/
-
-# Linting
-flake8 src/ tests/
-
-# Type checking
-mypy src/
-```
-
-## Expected CLI Commands
-
-```bash
-# Core generation
-longshade generate ./input/ --output ./persona/
-longshade generate ./input/ --approaches rag,infinigram --output ./persona/
-longshade analyze ./input/
-longshade chat ./persona/
-longshade evaluate ./persona/ --test-set ./test.jsonl
-
-# Serving
-longshade serve-infinigram ./persona/ --port 8001
-longshade serve-mcp ./persona/ --port 8002
-
-# Export and info
-longshade export echo ./persona/ --output ./archive/
-longshade info ./persona/
-```
-
-## Expected Tech Stack
-
-- Python 3.8+, Typer (CLI), FAISS (vectors), sentence-transformers (embeddings)
+- [arkiv](../arkiv/) — Universal personal data format (JSONL + SQLite + MCP)
+- [Claude Code](https://claude.ai/code) — Intelligence layer (runs the plugin)
 
 ## Related Projects
 
-### Input Sources (Toolkit Ecosystem)
-
-- [ctk](../ctk/) — Conversation export (strongest voice signal)
-- [mtk](../mtk/) — Email/music toolkit (strong voice signal)
-- [btk](../btk/) — Bookmark annotations (medium voice signal)
-- [ptk](../ptk/) — Photo toolkit with captions (medium voice signal)
-- [ebk](../ebk/) — Ebook toolkit with highlights/notes (medium voice signal)
-
-### Persona Enhancement
-
-- [infinigram](../infinigram/) — Suffix-array n-gram model for probability mixing (recommended enhancement)
-- [langcalc](../langcalc/) — Algebraic language model composition (reference implementation)
-
-### Compliance
-
+- [arkiv](../arkiv/) — Data layer
 - [longecho](../longecho/) — ECHO compliance validator
+- [memex](../memex/), [mtk](../mtk/), [btk](../btk/), [ptk](../ptk/), [ebk](../ebk/) — Source toolkits
+- [repoindex](../repoindex/), [chartfold](../chartfold/) — Additional data sources

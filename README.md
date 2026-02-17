@@ -1,159 +1,65 @@
-# longshade: Conversable Persona Generation
+# longshade
 
-**Status:** Specification Only — No Implementation Yet
+Persona packaging convention and Claude Code plugin for creating simulacra from personal data.
 
----
+## The Idea
 
-## What is longshade?
-
-longshade generates a **conversable persona** from personal data. Given conversations and writings, it produces everything needed to instantiate an LLM that can speak in your voice.
-
-This is the "ghost" — your digital echo that can answer questions, share perspectives, and represent your thinking after you're gone.
-
-*"The ghost is not you. But it echoes you."*
-
----
-
-## Quick Start (Planned)
-
-```bash
-# Generate persona from input data
-longshade generate ./input/ --output ./persona/
-
-# Test the persona interactively
-longshade chat ./persona/
-
-# Analyze inputs without generating
-longshade analyze ./input/
-```
-
----
-
-## Input Formats
-
-### conversations/*.jsonl
-
-Conversational data — your voice in dialogue.
-
-```jsonl
-{"role": "user", "content": "What do you think about...", "timestamp": "2024-01-15T10:30:00Z", "source": "ctk"}
-{"role": "assistant", "content": "I think...", "timestamp": "2024-01-15T10:31:00Z", "source": "ctk"}
-```
-
-**Required fields:**
-- `role`: "user" (your messages) or "assistant" (AI responses for context)
-- `content`: Message text
-
-**Optional fields:**
-- `timestamp`: ISO 8601 datetime
-- `source`: Where this came from (for attribution)
-- `conversation_id`: Group related messages
-- `topic`: Subject/theme
-
-**Note:** Your messages (`role: "user"`) are the primary signal for voice. AI responses provide context but are not persona.
-
-### writings/*.md
-
-Long-form writing — your voice in prose.
-
-```markdown
----
-title: Why I Care About Durability
-date: 2024-01-15
-tags: [philosophy, archiving]
-type: essay
----
-
-When I think about what matters...
-```
-
-**Frontmatter (optional but helpful):**
-- `title`: Title of the piece
-- `date`: When written
-- `tags`: Topics/themes
-- `type`: essay, post, note, letter, etc.
-
----
-
-## Output Format
-
-longshade produces a `persona/` directory:
-
-```
-persona/
-├── README.md           # How to use this persona
-├── system-prompt.txt   # Ready-to-use LLM system prompt
-├── rag/                # Embeddings and index for retrieval
-│   ├── index.faiss
-│   ├── metadata.json
-│   └── chunks.jsonl
-├── voice-samples.jsonl # Example Q&A pairs
-└── fine-tune/          # Optional training data
-```
-
-The system prompt captures voice, values, and style. The RAG index enables grounded responses with semantic search. Voice samples demonstrate correct tone for few-shot prompting.
-
----
+Your conversations, writings, emails, bookmarks, photos, and voice memos — all exported to [arkiv](../arkiv/) format — contain enough signal to create a conversable echo of you. longshade defines how to package that data as a persona, and provides Claude Code skills to generate one.
 
 ## How It Works
 
+A persona directory is a Claude Code project:
+
 ```
-Any Source                        longshade                      Output
-┌─────────────────┐              ┌─────────────────┐           ┌────────────────┐
-│ conversations/  │─────────────→│                 │           │ persona/       │
-│   *.jsonl       │              │ Analyze voice   │           │   README.md    │
-├─────────────────┤              │ Extract style   │──────────→│   system-prompt│
-│ writings/       │─────────────→│ Build RAG index │           │   rag/         │
-│   *.md          │              │ Generate prompt │           │   voice-samples│
-└─────────────────┘              └─────────────────┘           └────────────────┘
+persona/
+├── README.md              # Self-describing (ECHO compliant)
+├── CLAUDE.md              # System prompt (personality, voice, values)
+├── .mcp.json              # Connects arkiv MCP to data.db
+├── data.db                # arkiv SQLite (the person's data)
+├── manifest.json          # arkiv manifest (collection schemas)
+├── voice-samples.jsonl    # Few-shot Q&A pairs
+├── media/                 # Audio clips, images
+└── corpus/                # Source JSONL (canonical)
 ```
 
-1. **Ingest** — Read conversations and writings
-2. **Analyze** — Extract voice characteristics, values, patterns
-3. **Chunk & Embed** — Build semantic search index
-4. **Generate** — Produce system prompt and artifacts
+To talk to the simulacrum:
 
----
+```bash
+cd persona/
+claude
+```
 
-## Standalone Toolkit
+Claude loads the system prompt from `CLAUDE.md`, connects to the person's data via arkiv MCP, and speaks in their voice — grounded in their actual conversations, writings, and memories.
 
-longshade is part of the ECHO ecosystem but works independently:
+## Graceful Degradation
 
-- **longshade defines what it accepts** — Input formats are longshade's specification
-- **Any source can provide input** — If you can produce JSONL conversations or Markdown writings, longshade accepts them
-- **Outputs are self-contained** — The persona directory works with any LLM
+1. **Full** — Claude Code + arkiv MCP (interactive simulacrum with memory)
+2. **Good** — Any LLM + CLAUDE.md as system prompt
+3. **Minimal** — Read CLAUDE.md as a text file
+4. **Archival** — README.md, JSONL, SQLite are human-readable and durable
 
-Compatible data sources:
-- [ctk](https://github.com/aarontowell/ctk) — Conversation export
-- [btk](https://github.com/aarontowell/btk) — Bookmark annotations
-- Any tool that outputs JSONL or Markdown
+## Plugin Skills
 
----
+Install longshade as a Claude Code plugin, then:
 
-## Privacy Considerations
+- `/longshade-generate` — Create a persona from arkiv data
+- `/longshade-validate` — Check a persona directory against the spec
+- `/longshade-info` — Inspect a persona
 
-longshade processes personal data. Consider:
-- Review inputs before processing
-- Think about what you're comfortable having in a conversable persona
-- Use filtering options to exclude sensitive content
-- Control who has access to the output
+## Dependencies
 
-The generated persona can answer questions you never anticipated. Think carefully about what's included.
+- [arkiv](../arkiv/) — Data layer (JSONL, SQLite, MCP server)
+- [Claude Code](https://claude.ai/code) — Intelligence layer
 
----
+## Spec
 
-## Specification
+See [SPEC.md](SPEC.md) for the full persona directory convention.
 
-For the complete technical specification, see [SPEC.md](SPEC.md).
+## Related
 
----
-
-## Related Projects
-
-- [longecho](https://github.com/aarontowell/longecho) — ECHO compliance validator
-- [ctk](https://github.com/aarontowell/ctk) — Conversation toolkit
-- [btk](https://github.com/aarontowell/btk) — Bookmark toolkit
-- [ebk](https://github.com/aarontowell/ebk) — Ebook toolkit
+- [arkiv](../arkiv/) — Universal personal data format
+- [longecho](../longecho/) — ECHO compliance validator
+- [memex](../memex/), [mtk](../mtk/), [btk](../btk/), [ptk](../ptk/), [ebk](../ebk/) — Source toolkits (producers of arkiv data)
 
 ---
 
