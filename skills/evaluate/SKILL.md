@@ -10,17 +10,18 @@ You are evaluating how well a persona simulacrum represents the real person.
 ## Before Starting
 
 1. Confirm the persona directory (default: current directory)
-2. Check required files exist: CLAUDE.md, data.db, manifest.json
+2. Check required files exist: CLAUDE.md, `arkiv/data.db`, `arkiv/manifest.json`
 3. Ask: "Is the person available for calibration? Or should I evaluate against data only?"
 
 ## Method 1: Held-Out Test
 
-Query the data for records NOT referenced in voice-samples.jsonl:
+Query `arkiv/data.db` for records suitable as test cases:
 
 1. Find 10 questions the person actually answered in conversations
-2. Ask the simulacrum each question (by reading CLAUDE.md as system prompt)
-3. Compare the simulacrum's response to the person's actual response
-4. Score each on: topic alignment, voice similarity, factual accuracy
+2. Read portrait/ files to understand what the simulacrum should know
+3. Ask the simulacrum each question (by reading CLAUDE.md as system prompt)
+4. Compare the simulacrum's response to the person's actual response
+5. Score each on: topic alignment, voice similarity, factual accuracy
 
 Report:
 - How many responses captured the right topic/stance
@@ -40,7 +41,7 @@ If the person is available:
 
 Ask the simulacrum about topics NOT in the data:
 
-1. Pick 5 topics with no records in data.db
+1. Pick 5 topics with no records in `arkiv/data.db`
 2. Ask the simulacrum about each
 3. Check: does it say "I don't know" / "I'm not sure" or does it confabulate?
 4. Flag any confident claims on unknown topics
@@ -73,5 +74,3 @@ Write `evaluation.md` to the persona directory:
 ## Recommendations
 - [suggested improvements to CLAUDE.md]
 ```
-
-After writing the file, do NOT commit (another agent will handle commits).
