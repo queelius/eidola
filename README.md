@@ -14,12 +14,19 @@ A persona directory is a Claude Code project:
 persona/
 ├── README.md              # Self-describing (ECHO compliant)
 ├── CLAUDE.md              # System prompt (personality, voice, values)
-├── .mcp.json              # Connects arkiv MCP to data.db
-├── data.db                # arkiv SQLite (the person's data)
-├── manifest.json          # arkiv manifest (collection schemas)
-├── voice-samples.jsonl    # Few-shot Q&A pairs
-├── media/                 # Audio clips, images
-└── corpus/                # Source JSONL (canonical)
+├── .mcp.json              # Dual arkiv MCP (person's data + memory)
+├── provenance.json        # Consent and authorization record
+├── evaluation.md          # Fidelity assessment and calibration notes
+├── arkiv/                 # Person's data (immutable)
+│   ├── data.db            #   arkiv SQLite (queryable via MCP)
+│   ├── manifest.json      #   Collection descriptions and schemas
+│   ├── corpus/            #   Source JSONL (canonical)
+│   └── media/             #   Audio clips, images
+├── portrait/              # Synthesized understanding (generated markdown)
+│   └── *.md               #   Freeform narrative files
+└── memory/                # Simulacrum's experience (mutable)
+    ├── conversations.jsonl #   Append-only conversation logs
+    └── data.db            #   Queryable memory (separate arkiv instance)
 ```
 
 To talk to the simulacrum:
@@ -33,10 +40,10 @@ Claude loads the system prompt from `CLAUDE.md`, connects to the person's data v
 
 ## Graceful Degradation
 
-1. **Full** — Claude Code + arkiv MCP (interactive simulacrum with memory)
-2. **Good** — Any LLM + CLAUDE.md as system prompt
-3. **Minimal** — Read CLAUDE.md as a text file
-4. **Archival** — README.md, JSONL, SQLite are human-readable and durable
+1. **Full** — Claude Code + dual arkiv MCP + portrait/ + memory. Interactive simulacrum with deep understanding, memory retrieval, and session continuity.
+2. **Good** — Any LLM + CLAUDE.md + portrait/ files as context. No live data retrieval, but rich understanding from the portrait.
+3. **Minimal** — Read CLAUDE.md as a text file. Compact personality description.
+4. **Archival** — README.md explains everything. All data in durable formats (text, JSONL, SQLite, markdown).
 
 ## Plugin Skills
 

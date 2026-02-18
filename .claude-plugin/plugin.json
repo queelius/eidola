@@ -1,7 +1,7 @@
 {
   "name": "eidola",
   "description": "Persona packaging convention — create, evaluate, and manage conversable simulacra from personal data",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "author": {
     "name": "Alex Towell",
     "email": "lex@metafunctor.com"
