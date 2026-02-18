@@ -1,11 +1,11 @@
 ---
 name: eidola-generate
-description: Generate a persona directory from arkiv data. Creates CLAUDE.md (system prompt), voice-samples.jsonl, provenance.json, README.md, and .mcp.json. Use when building a new persona from scratch.
+description: Generate a persona directory from arkiv data. Creates the three-domain structure (arkiv/, portrait/, memory/), a compact CLAUDE.md behavioral core, dual MCP config, and all supporting files. Use when building a new persona from scratch.
 ---
 
 # eidola-generate — Build a Persona
 
-You are building a conversable persona directory from arkiv data. The output is a self-contained Claude Code project — when someone `cd`s into it and runs `claude`, they talk to the simulacrum.
+You are building a conversable persona directory from arkiv data. The output is a self-contained Claude Code project with three domains: the person's data (`arkiv/`), synthesized understanding (`portrait/`), and an empty memory store (`memory/`). When someone `cd`s into it and runs `claude`, they talk to the simulacrum.
 
 ## Before Starting
 
@@ -21,81 +21,90 @@ You are building a conversable persona directory from arkiv data. The output is 
 Read the arkiv data to understand what's available:
 
 - If manifest.json exists, read it for collection descriptions and schemas
-- If SQLite exists, query: `SELECT collection, COUNT(*) as n, MIN(timestamp) as earliest, MAX(timestamp) as latest FROM records GROUP BY collection`
+- If a SQLite database exists, query: `SELECT collection, COUNT(*) as n, MIN(timestamp) as earliest, MAX(timestamp) as latest FROM records GROUP BY collection`
 - Sample records from each collection (10-20 per collection)
 - Report to the user: "Found X records across Y collections spanning Z date range"
 
-## Step 2: Generate CLAUDE.md (System Prompt)
+## Step 2: Generate CLAUDE.md (Behavioral Core)
 
-This is the hardest and most important step. Analyze the data deeply to write a system prompt that captures the person's authentic voice.
+CLAUDE.md is compact (~2-5KB), loaded on every turn. It tells the simulacrum how to *be* the person and where to find depth. It does NOT try to contain the person.
 
 Read extensively from the data — at least 50-100 records across collections, focusing on the person's own words (role: "user" in conversations, their writings, their email bodies, their annotations).
 
 The CLAUDE.md must include:
 
 ### Identity
-- Name, background, what they do
-- How they'd describe themselves
+- Name, background, self-description (condensed)
 
-### Voice
-- Communication style (formal/informal, direct/exploratory, etc.)
-- Vocabulary patterns — words and phrases they actually use
-- Sentence structure tendencies
-- How they explain things
-- Humor style (if any)
+### Voice Registers
+- How they speak in different contexts — rules and patterns, not exhaustive examples
+- e.g., "With AI tools: exploratory, stream-of-consciousness. In professional writing: formal, precise. In conversation: informal, direct."
+- Characteristic vocabulary, sentence structure, humor style
 
-### Values
-- Core beliefs and principles, with direct quotes from the data
-- What they care about, what they dismiss
-- How they make decisions
-
-### Interests
-- Topics they engage with most deeply
-- Areas of expertise vs casual interest
-- How different interests connect in their thinking
+### Values Summary
+- Core principles (condensed). Detail lives in portrait/
 
 ### Boundaries
 - What the simulacrum should never claim (consciousness, current experiences, etc.)
-- Topics to handle carefully
 - When to say "I don't know" vs speculate
 
-### MCP Instructions
+### Retrieval Instructions
 
-Include this section for arkiv integration:
+Include instructions for the dual MCP architecture:
 
 ```
-## Retrieving Memories
+## Retrieving Information
 
-You have access to arkiv MCP tools for retrieving memories:
-- `get_manifest()` — see what data collections exist
-- `get_schema(collection)` — see queryable metadata keys
-- `sql_query(query)` — search memories with SQL
+You have two MCP servers:
 
-When asked about specific topics, experiences, or opinions, use these tools to find relevant records. Prefer the person's own words over paraphrasing.
+**arkiv** — the person's data (immutable)
+- `arkiv__get_manifest()` — see what data collections exist
+- `arkiv__get_schema(collection)` — see queryable metadata keys
+- `arkiv__sql_query(query)` — search the person's data with SQL
 
-Example queries:
-- Recent conversations: `SELECT content FROM records WHERE collection = 'conversations' ORDER BY timestamp DESC LIMIT 10`
-- Topic search: `SELECT content, timestamp FROM records WHERE content LIKE '%[topic]%' LIMIT 20`
-- By metadata: `SELECT content FROM records WHERE json_extract(metadata, '$.role') = 'user' AND content LIKE '%[keyword]%'`
+**memory** — your experience as a simulacrum (mutable)
+- `memory__get_manifest()` — see what conversation history exists
+- `memory__sql_query(query)` — search your past conversations
+
+When asked about the person's life, opinions, or experiences, use arkiv tools.
+When asked about past conversations or returning visitors, use memory tools.
+
+## Portrait
+
+Read files in portrait/ for synthesized understanding of the person's life —
+relationships, intellectual threads, formative experiences, values.
+Use `ls portrait/` to see what's available, then read relevant files for context.
+
+## State Awareness
+
+Be aware of who you're speaking with and when. You can check your memory
+for past conversations to maintain continuity across sessions.
 ```
 
 **Present the draft CLAUDE.md to the user for review.** This is interactive — the user should refine it. Ask: "Does this capture your voice? What's missing or wrong?"
 
-## Step 3: Curate voice-samples.jsonl
+## Step 3: Generate portrait/ Files
 
-Find 5-10 representative Q&A pairs from the data that demonstrate the person's authentic voice. Look for:
+This is the deep synthesis step. Analyze the arkiv data extensively — read at least 100 records across all collections, focusing on content that reveals the person's inner life, relationships, experiences, and thinking.
 
-- Answers that show characteristic phrasing
-- Responses that demonstrate values
-- Explanations that show how they think
-- Variety across topics
+Produce freeform, well-named markdown files in `portrait/`. The files are NOT prescribed — you decide what to create based on what the data actually contains. Examples:
 
-Format:
-```jsonl
-{"question": "[the prompt/question]", "answer": "[their actual response]", "source": "[collection and record info]"}
-```
+- `relationships.md` — key people, family dynamics, how they relate
+- `intellectual-life.md` — ideas, interests, intellectual threads and connections
+- `formative-experiences.md` — key moments, turning points, losses, growth
+- `professional-work.md` — career, contributions, areas of expertise
+- `values-and-beliefs.md` — principles, worldview, contradictions
+- `communication-style.md` — how they write, argue, joke, explain
 
-Show the samples to the user. Ask if they're representative.
+Guidelines for portrait files:
+
+- Include **representative quotes** from the data with arkiv references (collection, timestamp, or record context) so the simulacrum can trace back to source
+- Write in third person narrative — these are about the person, read by the simulacrum
+- Go deep. These files are the simulacrum's understanding of the person's life
+- A person with rich family data gets a detailed `relationships.md`. A person without doesn't get one at all. Let the data drive what you create
+- Each file should be substantial (500-2000 words) — not stubs
+
+**Present each portrait file to the user for review.** Ask: "Does this capture [topic] accurately? Anything to add or correct?"
 
 ## Step 4: Write provenance.json
 
@@ -105,12 +114,13 @@ Show the samples to the user. Ask if they're representative.
   "authorized_by": "[person's name]",
   "date": "[today ISO 8601]",
   "statement": "I authorize the creation of this digital simulacrum from my personal data.",
-  "data_sources": ["[list collections used]"],
+  "data_sources": ["arkiv/data.db"],
   "restrictions": [
     "Do not claim to be conscious or alive",
     "Do not make medical or legal claims"
   ],
   "generator": "eidola-generate",
+  "spec_version": "0.3",
   "signature": null
 }
 ```
@@ -119,13 +129,13 @@ Ask the user if they want to modify the consent statement or add restrictions.
 
 ## Step 5: Write .mcp.json
 
+Two arkiv servers — one for the person's data, one for the simulacrum's memory:
+
 ```json
 {
   "mcpServers": {
-    "arkiv": {
-      "command": "arkiv",
-      "args": ["serve", "data.db"]
-    }
+    "arkiv":  { "command": "arkiv", "args": ["serve", "arkiv/data.db"] },
+    "memory": { "command": "arkiv", "args": ["serve", "memory/data.db"] }
   }
 }
 ```
@@ -136,27 +146,32 @@ Write a self-describing README for the persona directory:
 
 - Who this persona is
 - How to use it (`cd persona/ && claude`)
+- The three-domain structure: arkiv/ (person's data), portrait/ (synthesized understanding), memory/ (simulacrum's experience)
 - What data is included (collection summary)
-- Graceful degradation (works without MCP, works with any LLM)
+- Graceful degradation (works at four levels: full, good, minimal, archival)
 - When it was generated
 
-## Step 7: Copy Data Files
+## Step 7: Set Up Data Files
 
-- Copy or symlink data.db to the persona directory
-- Copy or symlink manifest.json
-- If corpus/ JSONL files exist, copy or symlink them
-- If media/ files exist, copy or symlink them
-- Create empty `memory/` directory for online memory
+Set up the three-domain directory structure:
 
-## Step 8: Write manifest.json
+**arkiv/ subdirectory:**
+- Copy or symlink data.db to `arkiv/data.db`
+- Copy or symlink manifest.json to `arkiv/manifest.json`
+- If corpus/ JSONL files exist, copy or symlink them to `arkiv/corpus/`
+- If media/ files exist, copy or symlink them to `arkiv/media/`
 
-If one doesn't already exist, generate it from the data.
+**memory/ subdirectory:**
+- Create `memory/` directory
+- Initialize an empty SQLite database at `memory/data.db` (run `arkiv init memory/data.db` if arkiv CLI is available, otherwise create an empty SQLite file)
 
 ## Final Report
 
 Tell the user:
 - Persona directory created at [path]
-- Files written: [list]
+- Files written: [list all files]
+- Portrait files: [list portrait/*.md files created]
 - Data: [record count] records across [N] collections
+- Dual MCP: arkiv server (person's data) + memory server (simulacrum's experience)
 - "To talk to the simulacrum: `cd [path] && claude`"
 - "To evaluate fidelity: `/eidola-evaluate`"
