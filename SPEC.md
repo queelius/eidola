@@ -90,7 +90,7 @@ Examples of files Claude might produce (not prescribed):
 - `professional-work.md` — career, contributions, expertise
 - `values-and-beliefs.md` — principles, worldview, contradictions
 
-Files naturally include representative quotes from the data, with references back to arkiv collections. This subsumes the former voice-samples approach — voice examples are woven into the narrative rather than extracted into a rigid format.
+Files naturally include representative quotes from the data, with references back to arkiv collections. Voice examples are woven into the narrative rather than extracted into a rigid format.
 
 Key properties:
 
