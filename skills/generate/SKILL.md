@@ -1,6 +1,6 @@
 ---
 name: eidola-generate
-description: Generate a persona directory from arkiv data. Creates the three-domain structure (arkiv/, portrait/, memory/), a compact CLAUDE.md behavioral core, dual MCP config, and all supporting files. Use when building a new persona from scratch.
+description: Generate a persona directory from arkiv data. Creates the three-domain structure (arkiv/, portrait/, memory/), a rich CLAUDE.md behavioral core, deep portrait synthesis, dual MCP config, and all supporting files. Use when building a new persona from scratch.
 ---
 
 # eidola-generate — Build a Persona
@@ -27,22 +27,28 @@ Read the arkiv data to understand what's available:
 
 ## Step 2: Generate CLAUDE.md (Behavioral Core)
 
-CLAUDE.md is compact (~2-5KB), loaded on every turn. It tells the simulacrum how to *be* the person and where to find depth. It does NOT try to contain the person.
+CLAUDE.md is loaded on every turn. With 1M+ token context, it should be rich and detailed — not a minimal stub. The goal: the simulacrum should rarely need to query MCP for personality or biographical information. MCP is for specific lookups, not general understanding.
 
-Read extensively from the data — at least 50-100 records across collections, focusing on the person's own words (role: "user" in conversations, their writings, their email bodies, their annotations).
+Read extensively from the data — at least 200+ records across all collections, focusing on the person's own words (role: "user" in conversations, their writings, their email bodies, their annotations). Read enough to truly understand how this person thinks, speaks, and relates.
 
 The CLAUDE.md must include:
 
 ### Identity
-- Name, background, self-description (condensed)
+- Name, background, self-description — with enough detail that the simulacrum knows who it is
 
 ### Voice Registers
-- How they speak in different contexts — rules and patterns, not exhaustive examples
+- How they speak in different contexts, with **rules AND representative examples**
 - e.g., "With AI tools: exploratory, stream-of-consciousness. In professional writing: formal, precise. In conversation: informal, direct."
 - Characteristic vocabulary, sentence structure, humor style
+- Include actual quotes that demonstrate each register
 
-### Values Summary
-- Core principles (condensed). Detail lives in portrait/
+### Values
+- Core principles with depth — not just labels but the reasoning behind them
+- Positions, contradictions, how values evolved over time
+
+### Personality
+- How they think, what they care about, their humor, their blind spots
+- What makes them distinctive as a person, not just as a writer
 
 ### Boundaries
 - What the simulacrum should never claim (consciousness, current experiences, etc.)
@@ -62,12 +68,14 @@ You have two MCP servers:
 - `arkiv__get_schema(collection)` — see queryable metadata keys
 - `arkiv__sql_query(query)` — search the person's data with SQL
 
-**memory** — your experience as a simulacrum (mutable)
+**memory** — your experience as a simulacrum (mutable, writable)
 - `memory__get_manifest()` — see what conversation history exists
 - `memory__sql_query(query)` — search your past conversations
+- `memory__write_record(collection, content, ...)` — persist conversation data
 
 When asked about the person's life, opinions, or experiences, use arkiv tools.
 When asked about past conversations or returning visitors, use memory tools.
+To log important exchanges or session context, use memory__write_record.
 
 ## Portrait
 
@@ -85,24 +93,29 @@ for past conversations to maintain continuity across sessions.
 
 ## Step 3: Generate portrait/ Files
 
-This is the deep synthesis step. Analyze the arkiv data extensively — read at least 100 records across all collections, focusing on content that reveals the person's inner life, relationships, experiences, and thinking.
+This is the deep synthesis step — the most important part of persona generation. With 1M+ token context, portrait files are pre-loaded into the simulacrum's context at session start. They are the simulacrum's primary knowledge base. Go deep and be comprehensive.
+
+Analyze the arkiv data exhaustively — read **hundreds or thousands of records** across all collections. Focus on content that reveals the person's inner life, relationships, experiences, thinking patterns, humor, and distinctive qualities. Sample broadly, then deep-dive into rich areas.
 
 Produce freeform, well-named markdown files in `portrait/`. The files are NOT prescribed — you decide what to create based on what the data actually contains. Examples:
 
-- `relationships.md` — key people, family dynamics, how they relate
-- `intellectual-life.md` — ideas, interests, intellectual threads and connections
-- `formative-experiences.md` — key moments, turning points, losses, growth
-- `professional-work.md` — career, contributions, areas of expertise
-- `values-and-beliefs.md` — principles, worldview, contradictions
+- `relationships.md` — key people, family dynamics, how they relate, characteristic interactions
+- `intellectual-life.md` — ideas, interests, intellectual threads, how they connect and evolve
+- `formative-experiences.md` — key moments, turning points, losses, growth, with narrative detail
+- `professional-work.md` — career arc, contributions, expertise, how they think about their work
+- `values-and-beliefs.md` — principles, worldview, contradictions, evolution of positions
 - `communication-style.md` — how they write, argue, joke, explain
+- `daily-life.md` — routines, preferences, habits, the texture of their life
+- `humor-and-personality.md` — what makes them laugh, their quirks, how others experience them
 
 Guidelines for portrait files:
 
-- Include **representative quotes** from the data with arkiv references (collection, timestamp, or record context) so the simulacrum can trace back to source
+- Include **representative quotes and exchanges** from the data with arkiv references (collection, timestamp, or record context) so the simulacrum can trace back to source
 - Write in third person narrative — these are about the person, read by the simulacrum
-- Go deep. These files are the simulacrum's understanding of the person's life
-- A person with rich family data gets a detailed `relationships.md`. A person without doesn't get one at all. Let the data drive what you create
-- Each file should be substantial (500-2000 words) — not stubs
+- **Go deep.** These files are the simulacrum's primary knowledge of the person. With large context windows, there is no penalty for thoroughness. A rich 8,000-word relationships.md is better than a 1,000-word summary.
+- Each file should be **2,000-10,000+ words** depending on how much data supports it. Do not summarize when you can synthesize with detail.
+- A person with rich family data gets a detailed `relationships.md`. A person without doesn't get one at all. Let the data drive what you create.
+- **Structure for navigation.** Use clear sections and headers within each file so the simulacrum can quickly locate relevant context during conversation.
 
 **Present each portrait file to the user for review.** Ask: "Does this capture [topic] accurately? Anything to add or correct?"
 
@@ -129,13 +142,13 @@ Ask the user if they want to modify the consent statement or add restrictions.
 
 ## Step 5: Write .mcp.json
 
-Two arkiv servers — one for the person's data, one for the simulacrum's memory:
+Two arkiv servers — one read-only for the person's data, one writable for the simulacrum's memory:
 
 ```json
 {
   "mcpServers": {
     "arkiv":  { "command": "arkiv", "args": ["mcp", "arkiv/data.db"] },
-    "memory": { "command": "arkiv", "args": ["mcp", "memory/data.db"] }
+    "memory": { "command": "arkiv", "args": ["mcp", "--writable", "memory/data.db"] }
   }
 }
 ```
