@@ -14,7 +14,7 @@ Confirm the persona directory (default: current directory).
 ## Gather Information
 
 1. Read `provenance.json` (if exists) for subject name, date, and authorization
-2. Read `arkiv/manifest.json` for collection descriptions
+2. Read `arkiv/README.md` YAML frontmatter for archive description and collection metadata
 3. Query `arkiv/data.db`:
    ```sql
    SELECT collection, COUNT(*) as records, MIN(timestamp) as earliest, MAX(timestamp) as latest
@@ -65,7 +65,7 @@ Files:
   ✓ provenance.json
   ✓ evaluation.md
   ✓ arkiv/data.db (47 MB)
-  ✓ arkiv/manifest.json
+  ✓ arkiv/README.md
   ✓ portrait/ (3 files)
   ✓ memory/data.db (1.2 MB)
 ```
@@ -75,7 +75,7 @@ Files:
 - If provenance.json is missing, show "unknown" for Subject/Created/Authorized
 - If portrait/ is empty or missing, show "Portrait: (none)"
 - If memory/data.db is missing or empty, show "Memory: (none)"
-- In the Files section, use ✗ for missing required files (README.md, CLAUDE.md, arkiv/data.db, arkiv/manifest.json)
+- In the Files section, use ✗ for missing required files (README.md, CLAUDE.md, arkiv/data.db, arkiv/README.md)
 - Show file sizes for databases and portrait files
 - Format record counts with comma separators for readability
 - Format dates as YYYY-MM

@@ -65,9 +65,9 @@ eidola/
 ## How the Hook Works
 
 `hooks/session-start.sh` runs on every Claude Code session start (via `hooks/hooks.json`). It:
-1. Checks if `$CLAUDE_PROJECT_DIR` has `CLAUDE.md` + `arkiv/` + `memory/` (persona directory detection)
+1. Checks if `$CLAUDE_PROJECT_DIR` has `CLAUDE.md` + `arkiv/` (persona directory detection; memory/ is optional)
 2. If not a persona dir → exits silently (exit 0, no output)
-3. If persona dir → outputs JSON with `systemMessage` that orients the simulacrum (timestamp + check last session)
+3. If persona dir → outputs JSON with `systemMessage` that orients the simulacrum (timestamp + check last session if memory/ exists)
 
 The contract: exit 0 with JSON on stdout = `systemMessage` injected into Claude's context. Exit 0 with no output = no-op.
 

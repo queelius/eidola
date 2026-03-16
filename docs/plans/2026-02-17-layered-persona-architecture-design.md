@@ -36,7 +36,8 @@ persona/
 │   └── *.md               #   Freeform narrative files
 ├── arkiv/                 # Person's data (immutable)
 │   ├── data.db            #   SQLite (queryable via MCP)
-│   ├── manifest.json      #   Collection schemas
+│   ├── README.md          #   Self-describing archive metadata
+│   ├── schema.yaml        #   Curated metadata schema (optional)
 │   ├── corpus/            #   Source JSONL (canonical)
 │   └── media/             #   Audio clips, images
 └── memory/                # Simulacrum's experience (mutable)
@@ -118,8 +119,8 @@ Two arkiv servers — one for the person's data, one for the simulacrum's memory
 ```json
 {
   "mcpServers": {
-    "arkiv":  { "command": "arkiv", "args": ["serve", "arkiv/data.db"] },
-    "memory": { "command": "arkiv", "args": ["serve", "memory/data.db"] }
+    "arkiv":  { "command": "arkiv", "args": ["mcp", "arkiv/data.db"] },
+    "memory": { "command": "arkiv", "args": ["mcp", "memory/data.db"] }
   }
 }
 ```

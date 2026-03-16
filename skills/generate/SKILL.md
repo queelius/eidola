@@ -10,7 +10,7 @@ You are building a conversable persona directory from arkiv data. The output is 
 ## Before Starting
 
 1. Ask for the **input data location** — one of:
-   - A directory with arkiv JSONL files and/or manifest.json
+   - A directory with arkiv JSONL files and/or README.md (YAML frontmatter)
    - An arkiv SQLite database (data.db)
    - Both
 2. Ask for the **output directory** (default: `./persona/`)
@@ -20,7 +20,7 @@ You are building a conversable persona directory from arkiv data. The output is 
 
 Read the arkiv data to understand what's available:
 
-- If manifest.json exists, read it for collection descriptions and schemas
+- If README.md exists, read its YAML frontmatter for archive description and collection metadata
 - If a SQLite database exists, query: `SELECT collection, COUNT(*) as n, MIN(timestamp) as earliest, MAX(timestamp) as latest FROM records GROUP BY collection`
 - Sample records from each collection (10-20 per collection)
 - Report to the user: "Found X records across Y collections spanning Z date range"
@@ -134,8 +134,8 @@ Two arkiv servers — one for the person's data, one for the simulacrum's memory
 ```json
 {
   "mcpServers": {
-    "arkiv":  { "command": "arkiv", "args": ["serve", "arkiv/data.db"] },
-    "memory": { "command": "arkiv", "args": ["serve", "memory/data.db"] }
+    "arkiv":  { "command": "arkiv", "args": ["mcp", "arkiv/data.db"] },
+    "memory": { "command": "arkiv", "args": ["mcp", "memory/data.db"] }
   }
 }
 ```
@@ -157,13 +157,14 @@ Set up the three-domain directory structure:
 
 **arkiv/ subdirectory:**
 - Copy or symlink data.db to `arkiv/data.db`
-- Copy or symlink manifest.json to `arkiv/manifest.json`
+- Copy or symlink README.md to `arkiv/README.md`
+- If schema.yaml exists, copy or symlink it to `arkiv/schema.yaml`
 - If corpus/ JSONL files exist, copy or symlink them to `arkiv/corpus/`
 - If media/ files exist, copy or symlink them to `arkiv/media/`
 
 **memory/ subdirectory:**
 - Create `memory/` directory
-- Initialize an empty SQLite database at `memory/data.db` (run `arkiv init memory/data.db` if arkiv CLI is available, otherwise create an empty SQLite file)
+- Initialize an empty arkiv database at `memory/data.db` by running: `python3 -c "from arkiv import Database; Database('memory/data.db').close()"` -- or create an empty file and let the memory MCP server initialize it on first use
 
 ## Final Report
 

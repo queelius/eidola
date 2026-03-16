@@ -19,7 +19,7 @@ Run all checks and report results:
 - [ ] `README.md` exists
 - [ ] `CLAUDE.md` exists
 - [ ] `arkiv/data.db` exists and is a valid SQLite database
-- [ ] `arkiv/manifest.json` exists and is valid JSON
+- [ ] `arkiv/README.md` exists and has YAML frontmatter
 
 ### CLAUDE.md Structure
 - [ ] Has Identity section (name, background)
@@ -29,7 +29,7 @@ Run all checks and report results:
 - [ ] Has Retrieval Instructions section (arkiv MCP, memory MCP, portrait/ reference)
 
 ### Three-Domain Structure
-- [ ] `arkiv/` directory exists with `data.db` and `manifest.json`
+- [ ] `arkiv/` directory exists with `data.db` and `README.md`
 - [ ] `portrait/` directory exists with at least one `.md` file
 - [ ] `memory/` directory exists
 - [ ] `.mcp.json` references both `arkiv/data.db` and `memory/data.db`
@@ -37,7 +37,7 @@ Run all checks and report results:
 ### Data Integrity
 - [ ] `arkiv/data.db` has a `records` table
 - [ ] `arkiv/data.db` has a `_schema` table
-- [ ] Record count matches manifest (if specified)
+- [ ] Record count is non-zero
 - [ ] `memory/data.db` exists and is valid SQLite (can be empty)
 
 ### Immutable/Mutable Boundary

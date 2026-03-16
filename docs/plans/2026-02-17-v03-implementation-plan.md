@@ -159,8 +159,8 @@ Replace the single-server config with dual-server config:
 ```json
 {
   "mcpServers": {
-    "arkiv":  { "command": "arkiv", "args": ["serve", "arkiv/data.db"] },
-    "memory": { "command": "arkiv", "args": ["serve", "memory/data.db"] }
+    "arkiv":  { "command": "arkiv", "args": ["mcp", "arkiv/data.db"] },
+    "memory": { "command": "arkiv", "args": ["mcp", "memory/data.db"] }
   }
 }
 ```

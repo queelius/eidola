@@ -52,7 +52,7 @@ Work through these categories one question at a time. Adapt follow-up questions 
 After each answer, write an arkiv-format JSONL record:
 
 ```jsonl
-{"mimetype": "text/plain", "content": "[the person's answer]", "timestamp": "[now ISO 8601]", "metadata": {"role": "subject", "category": "[category name]", "question": "[the question asked]", "source": "eidola-interview"}}
+{"mimetype": "text/plain", "collection": "interviews", "content": "[the person's answer]", "timestamp": "[now ISO 8601]", "metadata": {"role": "subject", "category": "[category name]", "question": "[the question asked]", "source": "eidola-interview"}}
 ```
 
 Append each record to the output file as you go.
@@ -61,4 +61,4 @@ Append each record to the output file as you go.
 
 1. Ask: "Is there anything else you want your simulacrum to know about you?"
 2. Report: number of records written, categories covered, estimated word count
-3. Remind: "This JSONL file can be imported into arkiv with `arkiv import interview.jsonl --db data.db`"
+3. Remind: "This JSONL file can be imported into arkiv with `arkiv import interview.jsonl --db arkiv/data.db`"

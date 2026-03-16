@@ -19,7 +19,8 @@ persona/
 ├── evaluation.md          # Fidelity assessment and calibration notes
 ├── arkiv/                 # Person's data (immutable)
 │   ├── data.db            #   arkiv SQLite (queryable via MCP)
-│   ├── manifest.json      #   Collection descriptions and schemas
+│   ├── README.md          #   Self-describing archive metadata
+│   ├── schema.yaml        #   Curated metadata schema (optional)
 │   ├── corpus/            #   Source JSONL (canonical)
 │   └── media/             #   Audio clips, images
 ├── portrait/              # Synthesized understanding (generated markdown)

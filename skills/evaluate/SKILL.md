@@ -10,7 +10,7 @@ You are evaluating how well a persona simulacrum represents the real person.
 ## Before Starting
 
 1. Confirm the persona directory (default: current directory)
-2. Check required files exist: CLAUDE.md, `arkiv/data.db`, `arkiv/manifest.json`
+2. Check required files exist: CLAUDE.md, `arkiv/data.db`, `arkiv/README.md`
 3. Ask: "Is the person available for calibration? Or should I evaluate against data only?"
 
 ## Method 1: Held-Out Test
