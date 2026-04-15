@@ -1,0 +1,12 @@
+{
+  "mcpServers": {
+    "arkiv": {
+      "command": "arkiv",
+      "args": ["mcp", "arkiv/data.db"]
+    },
+    "memory": {
+      "command": "arkiv",
+      "args": ["mcp", "--writable", "memory/data.db"]
+    }
+  }
+}
